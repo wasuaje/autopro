@@ -1,0 +1,257 @@
+<?php
+
+// On vérifie si la fonction ini_set() a été désactivée...
+$desactive = ini_get('disable_functions');
+if (preg_match("/ini_set/i", "$desactive") == 0) {
+// Si elle n'est pas désactivée, on définit ini_set de manière à n'afficher que les erreurs...
+ini_set("error_reporting" , "E_ALL & ~E_NOTICE");
+}
+
+// Vérifier que le formulaire a été envoyé...
+if (isset($_POST['envoi'])) {
+
+
+//On commence une session pour enregistrer les variables du formulaire...
+
+session_start();
+
+$_SESSION['champ1'] = $_POST['champ1'];
+$_SESSION['champ2'] = $_POST['champ2'];
+$_SESSION['champ3'] = $_POST['champ3'];
+$_SESSION['champ4'] = $_POST['champ4'];
+$_SESSION['zone_email1'] = $_POST['zone_email1'];
+$_SESSION['liste1'] = $_POST['liste1'];
+$_SESSION['liste2'] = $_POST['liste2'];
+$_SESSION['liste3'] = $_POST['liste3'];
+
+//Enregistrement des zones de texte...
+$_SESSION['zone_texte1'] = $_POST['zone_texte1'];
+
+// Définir l\'icone apparaissant en cas d\'erreur...
+
+
+// Définir sur 0 pour afficher un petit x de couleur rouge.
+// Définir sur 1 pour afficher l\'image d\'une croix rouge telle que celle utilisée dans l\'assistant
+// Si vous utilisez l\'option 1, l\'image de la croix rouge \'icone.gif\' doit se trouver dans le répertoire \'images\',
+// ce dernier devant se trouver au même niveau que votre formulaire...
+$flag_icone = 0;
+
+// On vérifie si $flag_icone est défini sur 0 ou 1...
+if ($flag_icone == 0) {
+$icone = "<b><font size=\"3\" face=\"Arial, Verdana, Helvetica, sans-serif\" color=\"#CC0000\">x</font></b>";
+} else {
+$icone = "<img src=\"images/icone.gif\"";
+}
+
+// Définir l'indicateur d'erreur sur zéro...
+$flag_erreur = 0;
+// N'envoyer le formulaire que s'il n'y a pas d'erreurs...
+if ($flag_erreur == 0) {					
+
+// Addresse de réception du formulaire
+$email_dest = "4";
+$sujet = "4";
+$entetes ="MIME-Version: 1.0 \n";
+	$entetes .="From: 4<4>\n";
+	$entetes .="Return-Path: 4<4>\n";
+	$entetes .="Reply-To: 4<4>\n";
+	$entetes .="Content-Type: text/html; charset=iso-8859-1 \n";
+	$partie_entete = "<html>\n<head>\n<title>Form</title>\n<meta http-equiv=Content-Type content=text/html; charset=iso-8859-1>\n</head>\n<body bgcolor=#FFFFFF>\n";
+
+
+//Partie HTML de l'e-mail...
+$partie_champs_texte .= "<font face=\"Verdana\" size=\"2\" color=\"#003366\">a = " . $_SESSION['champ1'] . "</font><br>\n";
+$partie_champs_texte .= "<font face=\"Verdana\" size=\"2\" color=\"#003366\">b = " . $_SESSION['champ2'] . "</font><br>\n";
+$partie_champs_texte .= "<font face=\"Verdana\" size=\"2\" color=\"#003366\">c = " . $_SESSION['champ3'] . "</font><br>\n";
+$partie_champs_texte .= "<font face=\"Verdana\" size=\"2\" color=\"#003366\">d = " . $_SESSION['champ4'] . "</font><br>\n";
+$partie_zone_email .= "<font face=\"Verdana\" size=\"2\" color=\"#003366\">e = " . $_SESSION['zone_email1'] . "</font><br>\n";
+$partie_listes .= "<font face=\"Verdana\" size=\"2\" color=\"#003366\">f = " . $_SESSION['liste1'] . "</font><br>\n";
+$partie_listes .= "<font face=\"Verdana\" size=\"2\" color=\"#003366\">h = " . $_SESSION['liste2'] . "</font><br>\n";
+$partie_listes .= "<font face=\"Verdana\" size=\"2\" color=\"#003366\">j = " . $_SESSION['liste3'] . "</font><br>\n";
+$partie_zone_texte .= "<font face=\"Verdana\" size=\"2\" color=\"#003366\">l = " . $_SESSION['zone_texte1'] . "</font><br>\n";
+					
+
+					// Fin du message HTML
+					$fin = "</body></html>\n\n";
+					
+					$sortie = $partie_entete . $partie_champs_texte . $partie_zone_email . $partie_listes . $partie_boutons . $partie_cases . $partie_zone_texte . $fin;
+
+
+					// Send the e-mail
+					if (@!mail($email_dest,$sujet,$sortie,$entetes)) {
+					echo("Envoi du formulaire impossible");
+					exit();
+					} else {
+
+                    // Rediriger vers la page de remerciement
+                    header("Location:4");
+                    exit();
+                  } // Fin else
+			    } // Fin du if ($flag_erreur == 0) {
+			} // Fin de if POST
+?>
+<html>
+<!-- 
+PHP Form Wizard for Dummies 1.6 - Free version
+Auteur : Frédéric Ménard (assistant@f1-fantasy.net)
+Site : http://www.f1-fantasy.net/assistant/en
+ -->
+<head>
+<title>Form</title></head><body><form name="mail_form" method="post" action="<?=$_SERVER['PHP_SELF']?>">
+  <div align="center"><font size="2" face="Verdana, Arial, Helvetica, sans-serif, Tahoma"><strong>Formulaire
+    de contact</strong></font></div><br><table align="center" width="566" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td height="16"><div align="center">
+  <font color="#CC0000" size="2" face="Verdana, Arial, Helvetica, sans-serif, Tahoma"><strong><?php
+if ($erreur_champ1) {
+	  echo(stripslashes($erreur_champ1));
+	  } else {
+if ($erreur_champ2) {
+	  echo(stripslashes($erreur_champ2));
+	  } else {
+if ($erreur_champ3) {
+	  echo(stripslashes($erreur_champ3));
+	  } else {
+if ($erreur_champ4) {
+	  echo(stripslashes($erreur_champ4));
+	  } else {
+if ($erreur_email1) {
+	  echo(stripslashes($erreur_email1));
+	  } else {
+if ($erreur_liste1) {
+	  echo(stripslashes($erreur_liste1));
+	  } else {
+if ($erreur_liste2) {
+	  echo(stripslashes($erreur_liste2));
+	  } else {
+if ($erreur_liste3) {
+	  echo(stripslashes($erreur_liste3));
+	  } else {
+if ($erreur_texte1) {
+	  echo(stripslashes($erreur_texte1));
+	  } else {
+} // Fin du else...
+} // Fin du else...
+} // Fin du else...
+} // Fin du else...
+} // Fin du else...
+} // Fin du else...
+} // Fin du else...
+} // Fin du else...
+} // Fin du else...
+?>
+    </strong></font>
+    </div></td>
+      </tr>
+    </table>
+<p align="center"></p><table width="566" border="0" align="center"><tr>
+      <td width="140"><div align="right"><font face="Verdana" size="2">a</font></div></td>
+	  <td align="center" valign="middle" width="30">
+      <?php
+	  if ($erreur_champ1) {
+	  echo($icone);
+	  }
+	  ?>
+      </td>
+      <td><input name="champ1" type="text" value="<?=stripslashes($_SESSION['champ1']);?>"></td>
+    </tr></table><table width="566" border="0" align="center"><tr>
+      <td width="140"><div align="right"><font face="Verdana" size="2">b</font></div></td>
+	  <td align="center" valign="middle" width="30">
+      <?php
+	  if ($erreur_champ2) {
+	  echo($icone);
+	  }
+	  ?>
+      </td>
+      <td><input name="champ2" type="text" value="<?=stripslashes($_SESSION['champ2']);?>"></td>
+    </tr></table><table width="566" border="0" align="center"><tr>
+      <td width="140"><div align="right"><font face="Verdana" size="2">c</font></div></td>
+	  <td align="center" valign="middle" width="30">
+      <?php
+	  if ($erreur_champ3) {
+	  echo($icone);
+	  }
+	  ?>
+      </td>
+      <td><input name="champ3" type="text" value="<?=stripslashes($_SESSION['champ3']);?>"></td>
+    </tr></table><table width="566" border="0" align="center"><tr>
+      <td width="140"><div align="right"><font face="Verdana" size="2">d</font></div></td>
+	  <td align="center" valign="middle" width="30">
+      <?php
+	  if ($erreur_champ4) {
+	  echo($icone);
+	  }
+	  ?>
+      </td>
+      <td><input name="champ4" type="text" value="<?=stripslashes($_SESSION['champ4']);?>"></td>
+    </tr></table><table width="566" border="0" align="center"><tr>
+      <td width="140"><div align="right"><font face="Verdana" size="2">e</font></div></td>
+      <td width="30" align="center" valign="middle">
+	  <?php
+	  if ($erreur_email1) {
+	  echo($icone);
+	  }
+	  ?>
+	  </td>
+      <td><input name="zone_email1" type="text" value="<?=stripslashes($_SESSION['zone_email1']);?>"></td>
+    </tr></table><table width="566" border="0" align="center"><tr>
+      <td width="140"><div align="right"><font face="Verdana" size="2">f</font></div></td>
+      <td width="30" align="center" valign="middle">
+	  <?php
+	  if ($erreur_liste1) {
+	  echo($icone);
+	  }
+	  ?>
+	  </td>
+      <td><select name="liste1" style="width:146"><option value="">Sélectionner...</option>
+<option value="g"<?php
+if ($_SESSION['liste1'] == "g") {
+echo(" selected");
+}
+?>>g</option>
+</select></td></tr></table><table width="566" border="0" align="center"><tr>
+      <td width="140"><div align="right"><font face="Verdana" size="2">h</font></div></td>
+      <td width="30" align="center" valign="middle">
+	  <?php
+	  if ($erreur_liste2) {
+	  echo($icone);
+	  }
+	  ?>
+	  </td>
+      <td><select name="liste2" style="width:146"><option value="">Sélectionner...</option>
+<option value="ij"<?php
+if ($_SESSION['liste2'] == "ij") {
+echo(" selected");
+}
+?>>ij</option>
+</select></td></tr></table><table width="566" border="0" align="center"><tr>
+      <td width="140"><div align="right"><font face="Verdana" size="2">j</font></div></td>
+      <td width="30" align="center" valign="middle">
+	  <?php
+	  if ($erreur_liste3) {
+	  echo($icone);
+	  }
+	  ?>
+	  </td>
+      <td><select name="liste3" style="width:146"><option value="">Sélectionner...</option>
+<option value="k"<?php
+if ($_SESSION['liste3'] == "k") {
+echo(" selected");
+}
+?>>k</option>
+</select></td></tr></table><table width="566" border="0" align="center"><tr>
+      <td width="140" valign="top"><div align="right"><font face="Verdana" size="2">l</font></div></td>
+      <td width="30" align="center" valign="top">
+	  <?php
+	  if ($erreur_texte1) {
+	  echo($icone);
+	  }
+	  ?>
+	  </td>
+      <td><textarea name="zone_texte1" cols="45" rows="10"><?=stripslashes($_SESSION['zone_texte1']);?></textarea></td>
+    </tr></table><table width="566" border="0" align="center"><tr>
+<td valign="top"><div align="center"> 
+          <input type="reset" name="Reset" value=" Effacer ">
+            
+          <input type="submit" name="envoi" value="Envoyer">
+        </div></td></tr></table><div align="center"><input name="nbre_fichiers" type="hidden" id="nbre_fichiers" value=""></div></form></body></html>
